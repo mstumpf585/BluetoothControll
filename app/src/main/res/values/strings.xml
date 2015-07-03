@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">BluetoothControll</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <color name="cool_blue">#0000FF</color>
+    <string name="title_activity_utility">utility</string>
+    <string name="title_activity_tester">tester</string>
+</resources>
