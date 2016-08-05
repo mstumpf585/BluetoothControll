@@ -64,9 +64,12 @@ public class control extends ActionBarActivity {
 
 
         try {
-            mmSocket = mmDevice.createRfcommSocketToServiceRecord(uuid);
-            if (!mmSocket.isConnected()) {
-                mmSocket.connect();
+
+            if(mmSocket != null) {
+                mmSocket = mmDevice.createRfcommSocketToServiceRecord(uuid);
+                if (!mmSocket.isConnected()) {
+                    mmSocket.connect();
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -93,27 +96,30 @@ public class control extends ActionBarActivity {
         final class connectThread implements Runnable{
             @Override
             public void run() {
+
+                // try and connect to pi
                 sendBtMsg();
             }
         }
+
         final class workerThread implements Runnable {
 
             private String btMsg;
 
             public workerThread(String msg) {
-                btMsg = msg;
 
+                // chars that get sent to the pi
+                btMsg = msg;
             }
 
             public void run()
             {
                 try {
+
+                    // send the msg
                     String msg = btMsg;
-                    //msg += "\n";
                     OutputStream mmOutputStream = mmSocket.getOutputStream();
                     mmOutputStream.write(msg.getBytes());
-
-
 
                 } catch (IOException e) {
                     // TODO Auto-generated catch block
@@ -125,91 +131,75 @@ public class control extends ActionBarActivity {
 
 
         //start start button handler
-
         start.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v)
             {
                 (new Thread (new connectThread())).start();
             }
         });
-
         //end start button handler
 
         // start fwd button handler
-
         fwd.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // Perform action on temp button click
-
                 (new Thread(new workerThread("fwd"))).start();
-
             }
         });
-
         //end fwd button handler
 
         //start left on button handler
         left.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // Perform action on temp button click
-
                 (new Thread(new workerThread("left"))).start();
-
             }
         });
         //end left button handler
 
         //start right  button handler
-
         right.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // Perform action on temp button click
-
                 (new Thread(new workerThread("right"))).start();
-
             }
         });
-
         // end right button handler
 
         //start right  button handler
-
         rev.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-
                 (new Thread(new workerThread("rev"))).start();
-
             }
         });
-
         // end right button handler
 
 
 
-            // get around stupid shit
-            if(mBluetoothAdapter != null) {
+        // get around stupid shit
+        if(mBluetoothAdapter != null) {
 
-                if (!mBluetoothAdapter.isEnabled()) {
-                    Intent enableBluetooth = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                    startActivityForResult(enableBluetooth, 0);
-                }
+            if (!mBluetoothAdapter.isEnabled()) {
+                Intent enableBluetooth = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                startActivityForResult(enableBluetooth, 0);
+            }
 
-                Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
-                if (pairedDevices.size() > 0) {
-                    for (BluetoothDevice device : pairedDevices) {
-                        if (device.getName().equals("raspberrypi")) //Note, you will need to change this to match the name of your device
-                        {
-                            Log.e("Robo", device.getName());
-                            mmDevice = device;
-                            break;
-                        }
+            Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
+            if (pairedDevices.size() > 0) {
+                for (BluetoothDevice device : pairedDevices) {
+                    if (device.getName().equals("raspberrypi")) //Note, you will need to change this to match the name of your device
+                    {
+                        Log.e("Robo", device.getName());
+                        mmDevice = device;
+                        break;
                     }
                 }
-            } else{
-
-                Alerts tellEM = new Alerts();
-                tellEM.onCreate(savedInstanceState);
             }
+        } else{
+
+            Alerts tellEM = new Alerts();
+            tellEM.onCreate(savedInstanceState);
+        }
     }
 
 
