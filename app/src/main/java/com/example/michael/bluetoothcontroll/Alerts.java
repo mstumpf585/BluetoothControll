@@ -14,7 +14,6 @@ import android.widget.EditText;
  */
 public class Alerts extends DialogFragment
 {
-    private EditText confirm;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState)
@@ -30,11 +29,6 @@ public class Alerts extends DialogFragment
                 });
         // Create the AlertDialog object and return it
         return builder.create();
-    }
-
-    public void display()
-    {
-
     }
 
 }

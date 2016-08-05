@@ -1,10 +1,11 @@
 package com.example.michael.bluetoothcontroll;
 
+import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
+import android.content.Context;
 import android.content.Intent;
-import android.os.Message;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,10 +14,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.os.Handler;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Set;
 import java.util.UUID;
@@ -56,11 +55,7 @@ public class control extends ActionBarActivity {
     BluetoothSocket mmSocket;
     BluetoothDevice mmDevice = null;
 
-    final static Handler handler = new Handler();
-
     final byte delimiter = 33;
-    int readBufferPosition = 0;
-
 
 
     public void sendBtMsg() {
@@ -87,9 +82,6 @@ public class control extends ActionBarActivity {
         setContentView(R.layout.activity_control);
 
 
-
-
-        final TextView confirm = (TextView) findViewById(R.id.confirm);
         final Button fwd = (Button) findViewById(R.id.FWD);
         final Button rev = (Button) findViewById(R.id.REV);
         final Button left = (Button) findViewById(R.id.Left);
@@ -192,27 +184,32 @@ public class control extends ActionBarActivity {
 
         // end right button handler
 
-        if(!mBluetoothAdapter.isEnabled())
-        {
-            Intent enableBluetooth = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(enableBluetooth, 0);
-        }
 
-        Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
-        if(pairedDevices.size() > 0)
-        {
-            for(BluetoothDevice device : pairedDevices)
-            {
-                if(device.getName().equals("raspberrypi-0")) //Note, you will need to change this to match the name of your device
-                {
-                    Log.e("Aquarium", device.getName());
-                    mmDevice = device;
-                    break;
+
+            // get around stupid shit
+            if(mBluetoothAdapter != null) {
+
+                if (!mBluetoothAdapter.isEnabled()) {
+                    Intent enableBluetooth = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                    startActivityForResult(enableBluetooth, 0);
                 }
+
+                Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
+                if (pairedDevices.size() > 0) {
+                    for (BluetoothDevice device : pairedDevices) {
+                        if (device.getName().equals("raspberrypi")) //Note, you will need to change this to match the name of your device
+                        {
+                            Log.e("Robo", device.getName());
+                            mmDevice = device;
+                            break;
+                        }
+                    }
+                }
+            } else{
+
+                Alerts tellEM = new Alerts();
+                tellEM.onCreate(savedInstanceState);
             }
-        }
-
-
     }
 
 
