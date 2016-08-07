@@ -1,13 +1,12 @@
 package com.example.michael.bluetoothcontroll;
 
-import android.app.AlertDialog;
+
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothSocket;
-import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,19 +14,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import java.io.IOException;
-import java.io.OutputStream;
 import java.util.Set;
-import java.util.UUID;
-import java.lang.Runnable;
-
-
 
 public class control extends ActionBarActivity {
 
-
-
-
+    BluetoothDevice mmDevice;
+    blueToothControl bt = new blueToothControl();
+    String tvMsg = "";
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -51,90 +44,33 @@ public class control extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    /**My Code**/
-    BluetoothSocket mmSocket;
-    BluetoothDevice mmDevice = null;
-
-    final byte delimiter = 33;
-
-
-    public void sendBtMsg() {
-        //UUID uuid = UUID.fromString("00001101-0000-1000-8000-00805f9b34fb"); //Standard SerialPortService ID
-        final UUID uuid = UUID.fromString("94f39d29-7d6d-437d-973b-fba39e49d4ee"); //Standard SerialPortService ID
-
-
-        try {
-
-            if(mmSocket != null) {
-                mmSocket = mmDevice.createRfcommSocketToServiceRecord(uuid);
-                if (!mmSocket.isConnected()) {
-                    mmSocket.connect();
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-
     // Define the Handler that receives messages from the thread and update the progress
-
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(final Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_control);
 
 
-        final Button fwd = (Button) findViewById(R.id.FWD);
-        final Button rev = (Button) findViewById(R.id.REV);
-        final Button left = (Button) findViewById(R.id.Left);
+        final TextView tv  = (TextView) findViewById(R.id.confirm);
+        final Button fwd   = (Button) findViewById(R.id.FWD);
+        final Button rev   = (Button) findViewById(R.id.REV);
+        final Button left  = (Button) findViewById(R.id.Left);
         final Button right = (Button) findViewById(R.id.Right);
         final Button start = (Button) findViewById(R.id.settings);
 
-        BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        tv.setMovementMethod(new ScrollingMovementMethod());
 
-        final class connectThread implements Runnable{
-            @Override
-            public void run() {
-
-                // try and connect to pi
-                sendBtMsg();
-            }
-        }
-
-        final class workerThread implements Runnable {
-
-            private String btMsg;
-
-            public workerThread(String msg) {
-
-                // chars that get sent to the pi
-                btMsg = msg;
-            }
-
-            public void run()
-            {
-                try {
-
-                    // send the msg
-                    String msg = btMsg;
-                    OutputStream mmOutputStream = mmSocket.getOutputStream();
-                    mmOutputStream.write(msg.getBytes());
-
-                } catch (IOException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-
-            }
-        }
-
-
+        /**
+         *
+         * button handlers
+         *
+         * */
         //start start button handler
         start.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v)
             {
-                (new Thread (new connectThread())).start();
+                bt.callConnectThread(mmDevice);
             }
         });
         //end start button handler
@@ -142,8 +78,11 @@ public class control extends ActionBarActivity {
         // start fwd button handler
         fwd.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                // Perform action on temp button click
-                (new Thread(new workerThread("fwd"))).start();
+
+                tv.append("sending fwd \n");
+                tvMsg = bt.callWorkThread("fwd");
+                tv.append(tvMsg);
+
             }
         });
         //end fwd button handler
@@ -151,8 +90,9 @@ public class control extends ActionBarActivity {
         //start left on button handler
         left.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                // Perform action on temp button click
-                (new Thread(new workerThread("left"))).start();
+                tv.append("sending left \n");
+                tvMsg = bt.callWorkThread("left");
+                tv.append(tvMsg);
             }
         });
         //end left button handler
@@ -160,23 +100,32 @@ public class control extends ActionBarActivity {
         //start right  button handler
         right.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                // Perform action on temp button click
-                (new Thread(new workerThread("right"))).start();
+                tv.append("sending right \n");
+                tvMsg = bt.callWorkThread("right");
+                tv.append(tvMsg);
+
             }
         });
         // end right button handler
 
-        //start right  button handler
+        //start reverse  button handler
         rev.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                (new Thread(new workerThread("rev"))).start();
+                tv.append("sending rev \n");
+                tvMsg = bt.callWorkThread("rev");
+                tv.append(tvMsg);
+
             }
         });
-        // end right button handler
+        // end reverse button handler
 
+        /**
+         *
+         *  check on bluetooth adapter
+         *
+         */
+        BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
-
-        // get around stupid shit
         if(mBluetoothAdapter != null) {
 
             if (!mBluetoothAdapter.isEnabled()) {
@@ -197,13 +146,10 @@ public class control extends ActionBarActivity {
             }
         } else{
 
-            Alerts tellEM = new Alerts();
-            tellEM.onCreate(savedInstanceState);
+            // failed send the response to user
+            tv.setText("Error: could not find device \n");
         }
     }
-
-
-
 }
 
 

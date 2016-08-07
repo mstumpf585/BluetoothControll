@@ -13,10 +13,9 @@
         android:layout_height="wrap_content"
         android:text="FWD"
         android:id="@+id/FWD"
-        android:onClick="FWD"
-        android:layout_above="@+id/Left"
-        android:layout_centerHorizontal="true"
-        android:width="100dp" />
+        android:width="100dp"
+        android:layout_above="@+id/Right"
+        android:layout_centerHorizontal="true" />
 
     <Button
         style="?android:attr/buttonStyleSmall"
@@ -25,8 +24,9 @@
         android:text="REV"
         android:id="@+id/REV"
         android:width="100dp"
-        android:layout_below="@+id/Right"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerVertical="true"
+        android:layout_alignLeft="@+id/FWD"
+        android:layout_alignStart="@+id/FWD" />
 
     <Button
         style="?android:attr/buttonStyleSmall"
@@ -35,18 +35,19 @@
         android:text="Left"
         android:id="@+id/Left"
         android:width="100dp"
-        android:layout_centerVertical="true"
-        android:layout_toLeftOf="@+id/FWD"
-        android:layout_toStartOf="@+id/FWD" />
+        android:layout_above="@+id/REV"
+        android:layout_toLeftOf="@+id/REV"
+        android:layout_toStartOf="@+id/REV" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Right"
         android:id="@+id/Right"
-        android:layout_below="@+id/FWD"
-        android:layout_toRightOf="@+id/REV"
-        android:width="100dp" />
+        android:width="100dp"
+        android:layout_above="@+id/REV"
+        android:layout_toRightOf="@+id/FWD"
+        android:layout_toEndOf="@+id/FWD" />
 
     <Button
         android:layout_width="wrap_content"
@@ -56,8 +57,7 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="34dp"
-        android:onClick="changeEm" />
+        android:layout_marginTop="34dp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -66,10 +66,15 @@
         android:text="data"
         android:id="@+id/confirm"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
         android:width="200dp"
         android:background="#ffffff"
-        android:height="100dp"
-        android:textColor="#000000" />
+        android:height="160dp"
+        android:textColor="#000000"
+        android:maxLines="5"
+        android:scrollbars="vertical"
+        android:layout_alignRight="@+id/Right"
+        android:layout_alignEnd="@+id/Right"
+        android:layout_alignLeft="@+id/Left"
+        android:layout_alignStart="@+id/Left" />
 
 </RelativeLayout>
