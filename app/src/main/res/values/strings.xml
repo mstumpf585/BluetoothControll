@@ -3,7 +3,7 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
-    <color name="cool_blue">#0000FF</color>
+    <color name="cool_blue">#7ce07c</color>
     <string name="title_activity_utility">utility</string>
     <string name="title_activity_tester">tester</string>
 </resources>

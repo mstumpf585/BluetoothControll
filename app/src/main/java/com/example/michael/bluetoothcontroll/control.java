@@ -58,6 +58,7 @@ public class control extends ActionBarActivity {
         final Button left  = (Button) findViewById(R.id.Left);
         final Button right = (Button) findViewById(R.id.Right);
         final Button start = (Button) findViewById(R.id.settings);
+        final Button stop  = (Button) findViewById(R.id.stop);
 
         tv.setMovementMethod(new ScrollingMovementMethod());
 
@@ -70,7 +71,10 @@ public class control extends ActionBarActivity {
         start.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v)
             {
-                bt.callConnectThread(mmDevice);
+
+                tv.append("attempting to create socket \n");
+                tvMsg = bt.callConnectThread(mmDevice);
+                tv.append(tvMsg);
             }
         });
         //end start button handler
@@ -119,6 +123,17 @@ public class control extends ActionBarActivity {
         });
         // end reverse button handler
 
+        //start stop button handler
+        stop.setOnClickListener(new View.OnClickListener(){
+
+            public void onClick(View v){
+                tv.append("stopping motors \n");
+                tvMsg = bt.callWorkThread("stop");
+                tv.append(tvMsg);
+            }
+        });
+        //end stop button handler
+
         /**
          *
          *  check on bluetooth adapter
@@ -140,6 +155,7 @@ public class control extends ActionBarActivity {
                     {
                         Log.e("Robo", device.getName());
                         mmDevice = device;
+                        tv.setText("connected to " + device.getName() + "\n");
                         break;
                     }
                 }
@@ -147,7 +163,7 @@ public class control extends ActionBarActivity {
         } else{
 
             // failed send the response to user
-            tv.setText("Error: could not find device \n");
+            tv.setText("Error: could not find device \n >");
         }
     }
 }

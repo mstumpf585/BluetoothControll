@@ -63,18 +63,27 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="data"
+        android:text=">data"
         android:id="@+id/confirm"
         android:layout_alignParentBottom="true"
         android:width="200dp"
-        android:background="#ffffff"
+        android:background="@color/abc_input_method_navigation_guard"
         android:height="160dp"
-        android:textColor="#000000"
+        android:textColor="#1aec0b"
         android:maxLines="5"
         android:scrollbars="vertical"
         android:layout_alignRight="@+id/Right"
         android:layout_alignEnd="@+id/Right"
         android:layout_alignLeft="@+id/Left"
         android:layout_alignStart="@+id/Left" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Stop"
+        android:id="@+id/stop"
+        android:layout_alignBottom="@+id/settings"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
 </RelativeLayout>

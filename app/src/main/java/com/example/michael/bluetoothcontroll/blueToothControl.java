@@ -67,7 +67,7 @@ public class blueToothControl {
 
                 }else{
 
-                    workConfirmation = "Error: failed to send" + btMsg + "\n > ";
+                    workConfirmation = "Error: failed to send " + btMsg + "\n > ";
                 }
 
             } catch (IOException e) {
@@ -95,6 +95,8 @@ public class blueToothControl {
                 mmSocket = mmDevice.createRfcommSocketToServiceRecord(uuid);
                 if (!mmSocket.isConnected()) {
                     mmSocket.connect();
+
+                    connectionConfirmation = "socket has been created";
                 }
             }else{
 
@@ -107,7 +109,15 @@ public class blueToothControl {
 
     protected String callConnectThread(BluetoothDevice Device){
 
-        (new Thread(new connectThread(Device))).start();
+        Thread thread = new Thread(new connectThread(Device));
+        thread.start();
+
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
 
         return connectionConfirmation;
     }
@@ -116,6 +126,7 @@ public class blueToothControl {
 
         Thread thread = new Thread(new workerThread(msg));
         thread.start();
+
         try {
             thread.join();
         } catch (InterruptedException e) {
